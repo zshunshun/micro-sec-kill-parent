@@ -1,0 +1,13 @@
+server:
+  port: 8766
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8760/eureka     #配置注册中心url
+spring:
+  application:
+    name: category-client     #指定服务实例名称
+management:
+  endpoint:
+    health:
+      show-details: always      #显示详细健康信息

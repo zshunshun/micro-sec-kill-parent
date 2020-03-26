@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注销成功</title>
+    <!-- jquery.min 3.4.1 -->
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+您已成功注销系统……<a id="return-manager" href="javascript:void(0);">返回管理系统</a>
+<script type="text/javascript">
+    let hostname = "http://"+window.location.hostname;
+    $(function () {
+        $("#return-manager").click(function () {
+           window.location.href = hostname+":1208/static/manager/index.html";
+        });
+    });
+</script>
+</body>
+</html>

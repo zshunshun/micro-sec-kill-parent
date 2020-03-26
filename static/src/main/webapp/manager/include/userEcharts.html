@@ -1,0 +1,81 @@
+<script type="text/javascript" src="/static/incubator-echarts-4.5.0/dist/echarts.js"></script>
+
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="userDiv" style="width: 600px;height:400px;"></div>
+<script type="text/javascript">
+    let url = hostname+':8761/user-manager/findNewUsers';
+    function changeOption(o,c) {
+        $.post(url,{},function(result) {
+            o.series[0].data = result.listMan;
+            o.series[1].data = result.listFeman;
+            c.setOption(o);
+        },'json');
+    }
+    let chart;
+    let op;
+    $(function () {
+        // 基于准备好的dom，初始化echartss实例
+        let myChart = echarts.init(document.getElementById('userDiv'));
+        // 指定图表的配置项和数据
+        let option = {
+            title : {
+                text: '微秒杀用户注册统计',
+                subtext:'单位：人'
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['男','女']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: false, readOnly: false},
+                    magicType : {show: false, type: ['line', 'bar']},
+                    restore : {show: false},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['当天注册用户','近一周注册用户','近一月注册用户','近一年注册用户']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'男',
+                    type:'bar',
+                    data:[2, 4, 7, 23],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    }
+                },
+                {
+                    name:'女',
+                    type:'bar',
+                    data:[2, 5, 9, 26],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    }
+                }
+            ]
+        };
+        chart = myChart;
+        op = option;
+        changeOption(option,myChart);
+    });
+</script>

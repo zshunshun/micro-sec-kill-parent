@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录抢购系统</title>
+    <!-- 自定义cookie工具-->
+    <script src="../js/cookieUtil.js"></script>
+    <link rel="stylesheet" href="../tboot/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../tboot/css/back.css">
+    <link rel="stylesheet" href="../jqgrid/css/trirand/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../jqgrid/css/jquery-ui.css">
+    <script src="../tboot/js/jquery-2.2.1.min.js"></script>
+    <script src="../tboot/js/bootstrap.min.js"></script>
+    <script src="../jqgrid/js/trirand/src/jquery.jqGrid.js"></script>
+    <script src="../jqgrid/js/trirand/i18n/grid.locale-cn.js"></script>
+    <style type="text/css">
+        #s-nav{font-size: 30px;}
+        #login-msg{
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- 左边栏 -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">微秒杀后台管理系统</a>
+        </div>
+
+        <!-- 右边栏 -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul id="right-bar" class="nav navbar-nav navbar-right">
+                <li  id="to-login"><a class="navbar-brand tbox" href="javascript:void(0);">请登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2" >
+            <!--创建基本手风琴-->
+            <div class="panel-group" id="accordion">
+
+                <!--第一个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingOne">
+
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseOne" data-parent="#accordion" >
+                                用户管理
+                            </a>
+                        </h4>
+
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseOne" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:gotoUserList();">用户列表</a></li>
+                                <li class="list-group-item"><a href="javascript:gotoUserEcharts();">注册趋势图</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--第二个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseTwo" data-parent="#accordion" >
+                                类别管理
+                            </a>
+                        </h4>
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:gotoCategoryList();">类别列表</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--第三个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingThree">
+
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseThree" data-parent="#accordion" >
+                                商品管理
+                            </a>
+                        </h4>
+
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/article.jsp');">文章列表</a></li>
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/articleSearch.jsp');">文章搜索</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--第四个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingFour">
+
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseThree" data-parent="#accordion" >
+                                秒杀管理
+                            </a>
+                        </h4>
+
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseFour" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/article.jsp');">文章列表</a></li>
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/articleSearch.jsp');">文章搜索</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--第五个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingFive">
+
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseFour" data-parent="#accordion" >
+                                订单管理
+                            </a>
+                        </h4>
+
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseFive" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/chapter.jsp');">专辑列表</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--第六个面板-->
+                <div class="panel panel-default">
+                    <!--面板标题-->
+                    <div class="panel-heading" role="tab" id="headingSix">
+
+                        <h4 class="panel-title">
+                            <!--data-toggle collapse 折叠效果 -->
+                            <a data-toggle="collapse"  href="#collapseFive" data-parent="#accordion" >
+                                数据展示
+                            </a>
+                        </h4>
+
+                    </div>
+                    <!--面板内容-->
+                    <div id="collapseSix" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/banner.jsp');">轮播图列表</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="contentBody" class="col-sm-10" >
+
+        </div>
+    </div>
+</div>
+<br>
+<div class="panel panel-default text-center" style="height:50px;width:100%;clear:both;margin-top:-50px;margin-bottom: 0;">
+    <div class="panel-footer" >@周顺顺 zshunshun_work@163.com</div>
+</div>
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title" align="center">登录系统</h4>
+                <br/>
+                <p id="login-msg"></p>
+                <form class="form-horizontal" role="form" id="managerForm">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-offset-2 col-sm-2 control-label">账号</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="username" class="form-control" id="name" placeholder="请输您的入账号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="col-sm-offset-2 col-sm-2 control-label">密码</label>
+                        <div class="col-sm-5">
+                            <input type="password" name="password" class="form-control" id="password" placeholder="请输入您的密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkCode" class="col-sm-offset-2 col-sm-2 control-label">验证码</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="checkCode" class="form-control" id="checkCode" placeholder="请输入验证码">
+                        </div>
+                        <div class="col-sm-2">
+                            <img id="code-img" src="./img/验证码.png">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-5">
+                            <button id="submitBtn" type="button" class="btn btn-default btn-block btn-primary">登录</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+    let hostname = "http://"+window.location.hostname;
+    let jsessionid = getCookie("jsessonid");
+    function loginVerify() {
+        $.post(hostname+":8761/manager/getToken",{"jsessionid":jsessionid},function (result) {
+            if(result!=null&&result.length>0){
+                loginSuccess(result)
+            }
+        });
+    }
+    function loginSuccess(username){
+        $("#to-login").remove();
+        let $li = $('<li/>');
+        let $p = $("<p>").attr("class","navbar-brand").text("欢迎：");
+        let $b = $("<b/>").addClass("text-primary").text(username);
+        $p.append($b);
+        $li.append($p);
+        let $li1 = $("<li/>");
+        let $a = $("<a/>").addClass("navbar-brand").attr("id","logout-btn").attr("href","javascript:void(0);").text("注销");
+        $li1.append($a);
+        $("#right-bar").append($li).append($li1);
+    }
+    $(function(){
+        //处理用户是否登录
+        loginVerify();
+        //对jsessionid进行验证获取，如果本地存在直接使用，否则从服务器获取
+        if(jsessionid==null){
+            $.post(hostname+":1208/static/cookie/getJsessionid",'',function (result) {
+                setCookie("jsessonid",result);
+            });
+        }
+        //加载后台管理首页
+        $("#contentBody").load(hostname+':1208/static/manager/include/home.html');
+        //点击“请登录”按钮显示登录模态框
+        $(".tbox").click(function(){
+            $('#myModal').modal('show') //显示模态框
+            $("#code-img").attr('src',hostname+":8761/security/getCode?jsessionid="+jsessionid);
+        })
+        //点击验证码图片换图
+        $("#code-img").click(function () {
+            $("#code-img").attr("src",hostname+":8761/security/getCode?jsessionid="+jsessionid+"&id="+Math.random());
+        });
+        //点击提交按钮进行登录验证
+        $("#submitBtn").click(function () {
+            $.post(hostname+':8761/manager/login?jsessionid='+jsessionid,$("#managerForm").serialize(),function (result) {
+                if(result.status==200){
+                    $("#myModal").modal('hide');
+                    loginSuccess(result.username);
+                }else if(result.status==500){
+                    $("#login-msg").text("用户名或密码错误！");
+                    $("#name").focus();
+                }else{
+                    $("#login-msg").text("验证码错误！");
+                    $("#checkCode").focus();
+                }
+            });
+        });
+        $("#right-bar").on("click","#logout-btn",function () {
+            $.post(hostname+":8761/manager/logout",{"jsessionid":jsessionid},function (result) {
+                console.log(result);
+                if(result=="ok"){
+                    alert("您已注销系统！");
+                    //window.location.href = hostname+":1208/static/manager/logout.html";
+                    location.reload();
+                }else{
+                    alert("注销失败！");
+                }
+            });
+        });
+    });
+    //加载用户列表
+    function gotoUserList() {
+        $('#contentBody').load(hostname+':1208/static/manager/include/users.html');
+    }
+    //加载用户注册趋势图
+    function gotoUserEcharts() {
+        $('#contentBody').load(hostname+':1208/static/manager/include/userEcharts.html');
+
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+server:
+  port: 1208
+  servlet:
+    context-path: /static
+
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
