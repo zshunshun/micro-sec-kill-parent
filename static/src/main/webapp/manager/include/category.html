@@ -1,0 +1,107 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">类别列表</a>
+        </div>
+    </div>
+</nav>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#">所有类别列表</a></li>
+    <li>
+</ul>
+
+<script type="text/javascript">
+    $(function () {
+        $("#categoryList").jqGrid(
+            {
+                url : hostname+':8766/category/findByPage',
+                datatype : "json",
+                height : 190,
+                colNames : [ 'id', '类别名', 'parentId' ],
+                colModel : [
+                    {name : 'id',hidden:true},
+                    {name : 'name',align:"center",editable:true,editrules:{required:true}},
+                    {name : 'parentId',hidden:true},
+                ],
+                rowNum : 10,
+                rowList : [ 10, 20, 30, 50 ],
+                pager : '#categoryPager',
+                viewrecords : true,
+                multiselect : true,
+                height:400,
+                subGrid : true,
+                autowidth: true,
+                styleUI: "Bootstrap",
+                editurl:hostname+":8766/category/edit",
+                subGridRowExpanded : function(subgrid_id, row_id) {
+                    subGridCreate(subgrid_id,row_id);
+                },
+                subGridRowColapsed : function(subgrid_id, row_id) {
+                    // this function is called before removing the data
+                    //var subgrid_table_id;
+                    //subgrid_table_id = subgrid_id+"_t";
+                    //jQuery("#"+subgrid_table_id).remove();
+                }
+            });
+        $("#categoryList").jqGrid('navGrid', '#categoryPager', {
+            add : true,
+            edit : true,
+            del : true,
+            search: false
+        },{
+            closeAfterEdit: true
+        },{
+            closeAfterAdd: true
+        });
+    });
+    function subGridCreate(subgrid_id, row_id) {
+        var c, pager_id;
+        subgrid_table_id = subgrid_id + "_t";
+        pager_id = "p_" + subgrid_table_id;
+        $("#" + subgrid_id).html(
+            "<table id='" + subgrid_table_id
+            + "' class='scroll'></table><div id='"
+            + pager_id + "' class='scroll'></div>");
+        $("#" + subgrid_table_id).jqGrid(
+            {
+                url : hostname+":8766/category/findByParentId?parentId=" + row_id,
+                datatype : "json",
+                colNames : [ 'id','二级类别名','父类别id'],
+                colModel : [
+                    {name : "id",hidden: true},
+                    {name : "name",editable:true},
+                    {name : "parentId",hidden:true}
+                ],
+                rowNum : 5,
+                pager : pager_id,
+                height : '100%',
+                autowidth: true,
+                styleUI: "Bootstrap",
+                editurl: hostname+':8766/category/editChild?parentId='+row_id,
+                multiselect: true
+            });
+        jQuery("#" + subgrid_table_id).jqGrid('navGrid',
+            "#" + pager_id, {
+                edit : true,
+                add : true,
+                del : true,
+                search: false
+            },{
+                closeAfterEdit:true,
+                beforeShowForm(frm){
+                    frm.find("#createDate").attr("disabled",true);
+                }
+            },{
+                closeAfterAdd: true,
+                beforeShowForm(frm) {
+                    frm.find("#musicId").val(row_id);
+                }
+            });
+    }
+</script>
+
+<div>
+    <table id="categoryList"></table>
+    <div id="categoryPager" style="height: 35px;"></div>
+</div>
