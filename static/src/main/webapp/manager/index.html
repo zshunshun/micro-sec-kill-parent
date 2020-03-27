@@ -266,12 +266,12 @@
         loginVerify();
         //对jsessionid进行验证获取，如果本地存在直接使用，否则从服务器获取
         if(jsessionid==null){
-            $.post(hostname+":1208/static/cookie/getJsessionid",'',function (result) {
+            $.post("/static/cookie/getJsessionid",'',function (result) {
                 setCookie("jsessonid",result);
             });
         }
         //加载后台管理首页
-        $("#contentBody").load(hostname+':1208/static/manager/include/home.html');
+        $("#contentBody").load('/static/manager/include/home.html');
         //点击“请登录”按钮显示登录模态框
         $(".tbox").click(function(){
             $('#myModal').modal('show') //显示模态框
@@ -311,11 +311,11 @@
     });
     //加载用户列表
     function gotoUserList() {
-        $('#contentBody').load(hostname+':1208/static/manager/include/users.html');
+        $('#contentBody').load('/static/manager/include/users.html');
     }
     //加载用户注册趋势图
     function gotoUserEcharts() {
-        $('#contentBody').load(hostname+':1208/static/manager/include/userEcharts.html');
+        $('#contentBody').load('/static/manager/include/userEcharts.html');
 
     }
 </script>
