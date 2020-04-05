@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ie </title>
+    <script type="text/javascript">
+        function getParameter(val) {
+            let uri = decodeURI(window.location.search);
+            let re = new RegExp("" + val + "=([^&?]*)", "ig");
+            return ((uri.match(re)) ? (uri.match(re)[0].substr(val.length + 1)) : null);
+        }
+
+        let upload_callback = function() {
+            let error = getParameter("error");
+            error = parseInt(error)
+            let dataObject;
+            if(error==0){
+                let url = getParameter("url");
+                dataObject = {"error": error, "url": url};
+            }else{
+                let message = getParameter("message");
+                dataObject = {"error": error, "message": message};
+            }
+            let data =  JSON.stringify(dataObject)
+            document.getElementsByTagName("body")[0].innerHTML = '<pre>' + data + '</pre>';
+        }
+    </script>
+</head>
+<body onload="upload_callback();">
+</body>
+</html>

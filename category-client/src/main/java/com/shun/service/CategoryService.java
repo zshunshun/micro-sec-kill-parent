@@ -2,6 +2,7 @@ package com.shun.service;
 
 import com.shun.entity.Category;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CategoryService {
@@ -16,4 +17,10 @@ public interface CategoryService {
     Map findByParentId(Integer page,Integer rows,Integer parentId);
 
     Map addChild(Integer parentId, String name);
+
+    List findAllParents();
+
+    Map findById(Integer id);
+
+    Map findAllByParentId(Integer parentId);
 }

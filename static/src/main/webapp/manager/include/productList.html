@@ -1,0 +1,148 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">商品管理</a>
+        </div>
+    </div>
+</nav>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#">商品列表</a></li>
+    <li>
+    <li >
+        <a href="javascript:showEditor();">添加商品</a></li>
+    <li>
+</ul>
+
+<div>
+    <table id="productList"></table>
+    <div id="productPager" style="height: 35px" ></div>
+</div>
+
+<script type="text/javascript">
+    function showEditor() {
+        $("#for1")[0].reset();
+        setCategory('');
+        $("#modalTitle").text("添加商品");
+        KindEditor.html("#editor_id","");
+        $('#myModal1').modal('toggle');
+    }
+    function setCategory(childId) {
+        $("#categorySelect").empty();
+        let id = "";
+        if(childId!=""){
+            $.ajaxSettings.async = false;
+            $.post(hostname+":8766/category/findById",{id:childId},function (result) {
+                result.status==200?id=result.category.parentId:id="";
+            });
+            $.ajaxSettings.async = true;
+        }
+        $.post(hostname+":8766/category/findAllParents","",function (result) {
+            if(id==""){
+                id = result[0].id;
+            }
+            for (let i=0;i<result.length;i++) {
+                let $op;
+                if(result[i].id==id){
+                    $op = $("<option/>").attr('value',result[i].id).text(result[i].name).attr('selected','selected');
+                }else{
+                    $op = $("<option/>").attr('value',result[i].id).text(result[i].name);
+
+                }
+                $("#categorySelect").append($op);
+            }
+            setCategoryTwo(childId);
+        },'json');
+    }
+    function setCategoryTwo(id) {
+        $("#categoryTwoSelect").empty();
+        let parentId = $("#categorySelect").val();
+        $.post(hostname+":8766/category/findAllByParentId",{parentId:parentId},function (result) {
+            let category = result.category;
+            if(id==""){
+                id = category[0].id;
+            }
+            for (let i=0;i<category.length;i++) {
+                let $op;
+                if(category[i].id==id){
+                    $op = $("<option/>").attr('value',category[i].id).text(category[i].name).attr('selected','selected');
+                }else{
+                    $op = $("<option/>").attr('value',category[i].id).text(category[i].name);
+                }
+                $("#categoryTwoSelect").append($op);
+            }
+        },'json');
+    }
+    function showTable(id) {
+        let data = $("#productList").jqGrid("getRowData",id);
+        $("#nameInput").val(data.name);
+        $("#idInput").val(data.id);
+        $.post(hostname+":8762/pro-cat-manager/findByProductId",{productId:data.id},function (result) {
+            setCategory(result.productCategory.categoryId);
+        });
+        $("#priceInput").val(data.price);
+        $("#inventoryInput").val(data.inventory);
+        $("#editor_id").val(data.info);
+        $("#modalTitle").text("预览商品");
+        KindEditor.html("#editor_id",data.info);
+        $('#myModal1').modal('toggle');
+    }
+    $(function () {
+        $("#categorySelect").change(setCategoryTwo);
+        $("#productList").jqGrid(
+            {
+                url : hostname+':8762/product-manager/findByPage',
+                datatype : "json",
+                colNames : [ 'ID','商品名','类别', '封面','价格','库存', '销量', '创建时间','介绍',"操作" ],
+                colModel : [
+                    {name : 'id',hidden:true},
+                    {name : 'name',align:"center",editable:true,editrules:{required:true}},
+                    {name : 'categoryId',align:"center",editable:true,editrules:{required:true},formatter: function (cellvalue, options, rowObject) {
+                            let id = rowObject.productCategory.categoryId;
+                            let categoryName = "";
+                            let categoryId = "";
+                            $.ajaxSettings.async = false;
+                            $.post(hostname+":8766/category/findById",{id:id},function (result) {
+                                categoryName = result.category.name;
+                                categoryId = result.category.id;
+                            });
+                            $.ajaxSettings.async = true;
+                            return "<p value='"+categoryId+"'>"+categoryName+"</p>";
+                        }},
+                    {name : 'cover',align:"center",formatter:function (data) {
+                            return "<img src='"+data+"' style='height: 100px;' />";
+                        },search: false},
+                    {name : 'price'},
+                    {name : 'inventory'},
+                    {name : 'volume'},
+                    {name : 'createDate',align:"center",formatter:function (data) {
+                            var date = new Date(data);
+                            return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+                        }},
+                    {name : 'info',hidden:true},
+                    {
+                        name: "haha", formatter: function (cellvalue, options, rowObject) {
+                            return `<a class="btn btn-lg" href="javascript:showTable('`+rowObject.id+`');"><span class="glyphicon glyphicon-th-list"></span></a>`;
+                        }, search: false,align:"center"
+                    }
+                ],
+                rowNum : 5,
+                rowList : [ 5,10, 15, 20 ],
+                pager : '#productPager',
+                mtype : "post",
+                viewrecords : true,
+                styleUI:"Bootstrap",
+                autowidth:true,
+                multiselect:true,
+                height:300,
+                editurl:hostname+":8762/product-manager/edit"
+            });
+        $("#productList").jqGrid('navGrid', '#productPager', {edit : false,add : false,del : true,search:false,edittext:"编辑",addtext:"添加",deltext:"删除"},
+            {
+            },{
+            },
+            {
+                closeAfterDel:true
+            });
+    });
+</script>

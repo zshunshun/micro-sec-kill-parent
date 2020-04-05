@@ -95,4 +95,37 @@ class CategoryServiceImpl implements CategoryService {
         }
         return map;
     }
+
+    @Override
+    public List findAllParents() {
+        Example example = new Example(Category.class);
+        example.createCriteria().andIsNull("parentId");
+        return categoryDao.selectByExample(example);
+    }
+
+    @Override
+    public Map findById(Integer id) {
+        Map map = new HashMap();
+        Category category = categoryDao.selectOne(new Category(id, null, null));
+        if(category==null){
+            map.put("status",500);
+        }else{
+            map.put("status",200);
+            map.put("category",category);
+        }
+        return map;
+    }
+
+    @Override
+    public Map findAllByParentId(Integer parentId) {
+        Map map = new HashMap();
+        List<Category> category = categoryDao.select(new Category(null, null, parentId));
+        if(category==null){
+            map.put("status",500);
+        }else{
+            map.put("status",200);
+            map.put("category",category);
+        }
+        return map;
+    }
 }

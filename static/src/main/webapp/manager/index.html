@@ -13,8 +13,10 @@
     <script src="../tboot/js/bootstrap.min.js"></script>
     <script src="../jqgrid/js/trirand/src/jquery.jqGrid.js"></script>
     <script src="../jqgrid/js/trirand/i18n/grid.locale-cn.js"></script>
+    <script src="../tboot/js/ajaxfileupload.js"></script>
+    <script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
     <style type="text/css">
-        #s-nav{font-size: 30px;}
         #login-msg{
             text-align: center;
             color: red;
@@ -105,8 +107,7 @@
                     <div id="collapseThree" class="panel-collapse collapse">
                         <div class="panel-body">
                             <ul class="list-group">
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/article.jsp');">文章列表</a></li>
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/articleSearch.jsp');">文章搜索</a></li>
+                                <li class="list-group-item"><a href="javascript:javascript:gotoProductList();">商品列表</a></li>
                             </ul>
                         </div>
                     </div>
@@ -129,8 +130,8 @@
                     <div id="collapseFour" class="panel-collapse collapse">
                         <div class="panel-body">
                             <ul class="list-group">
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/article.jsp');">文章列表</a></li>
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/articleSearch.jsp');">文章搜索</a></li>
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/product-manager.jsp');">文章列表</a></li>
+                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/product-managerSearch.jsp');">文章搜索</a></li>
                             </ul>
                         </div>
                     </div>
@@ -316,13 +317,144 @@
     //加载用户注册趋势图
     function gotoUserEcharts() {
         $('#contentBody').load('/static/manager/include/userEcharts.html');
-
     }
     //加载类别列表
     function gotoCategoryList() {
         $('#contentBody').load('/static/manager/include/category.html');
-
+    }
+    //加载类别列表
+    function gotoProductList() {
+        $('#contentBody').load('/static/manager/include/productList.html');
     }
 </script>
 </body>
+<div class="modal fade" id="myModal1"  role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 750px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalTitle">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="for1">
+                    <input name="id" type="text" hidden id="idInput" />
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left" >商品名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="nameInput" name="name" class="form-control" placeholder="请输入商品名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left">一级类别</label>
+                        <div class="col-sm-10">
+                            <select name="parentCategoryId" id="categorySelect" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left">二级类别</label>
+                        <div class="col-sm-10">
+                            <select name="categoryId" id="categoryTwoSelect" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left">展示封面</label>
+                        <div class="col-sm-10">
+                            <input type="file" id="cover-input" name="imgFile" class="form-control">
+                            <input type="text" id="coverText" name="cover" hidden/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left" >商品单价</label>
+                        <div class="col-sm-10">
+                            <input type="number" id="priceInput" name="price" class="form-control" placeholder="请输入商品价格">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label" style="width: 12%;text-align: left" >原始库存</label>
+                        <div class="col-sm-10">
+                            <input type="number" id="inventoryInput"  name="inventory" class="form-control" placeholder="请输入库存">
+                        </div>
+                    </div>
+
+                    <textarea id="editor_id" name="info" style="width:700px;height:300px;">
+                     </textarea>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="subBtn" class="btn btn-primary">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+    function submitProduct() {
+        $.post(hostname+':8762/product-manager/addOrUpdate',$('#for1').serialize(),function (result) {
+            //隐藏模态框
+            //重新载入列表
+            $("#for1")[0].reset();
+            $('#myModal1').modal('toggle');
+            $("#productList").trigger("reloadGrid");
+        });
+    }
+    function uploadCover(){
+        if(!$("#cover-input").val()){submitProduct();return;}
+        $.ajaxFileUpload({
+            url : hostname+":1208/static/file/upload", //用于文件上传的服务器端请求地址
+            fileElementId : 'cover-input', //文件上传空间的id属性  <input type="file" id="file" name="file" />
+            type : 'post',
+            dataType : 'text', //返回值类型 一般设置为json
+            success : function(data, status) //服务器成功响应处理函数
+            {
+                data = data.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">','');
+                data = data.replace('</pre>','');
+                data = JSON.parse(data);
+                $("#coverText").val(data.url);
+                submitProduct();
+            },
+            error : function(data, status, e)//服务器响应失败处理函数
+            {
+                alert("图片上传失败");
+            }
+        });
+    }
+    //document.domain = hostname+":8762";
+    let callBackPath = hostname+":1208/static/manager/redirect.html";
+    KindEditor.ready(function(K) {
+        $("#for1")[0].reset();
+        let options={
+            //basePath : hostname+":8762",
+            urlType :'domain',
+            uploadJson : hostname+':1208/static/file/uploadProduct',
+            fileManagerJson : hostname+':1208/static/file/findAllImage',
+            allowFileManager : true,
+            afterBlur:function () {
+                this.sync();
+            }
+        };
+        window.editor = K.create('#editor_id',options);
+    });
+    $(function () {
+        $("#priceInput").change(function () {
+            let num = $("#priceInput").val();
+            if(num<0){
+                alert("单价必须大于等于0！");
+                $("#priceInput").focus();
+            }
+        });
+        $("#inventoryInput").change(function () {
+            let num = $("#inventoryInput").val();
+            if(num<0){
+                alert("库存必须大于等于0！");
+                $("#inventoryInput").focus();
+            }
+        });
+        $("#subBtn").click(function () {
+            uploadCover();
+        });
+    });
+</script>
 </html>

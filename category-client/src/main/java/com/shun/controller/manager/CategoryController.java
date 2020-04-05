@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -44,6 +45,12 @@ public class CategoryController {
         response.setHeader("Access-Control-Allow-Origin","*");
         return categoryService.findByParentId(page,rows,parentId);
     }
+    @RequestMapping("findAllByParentId")
+    @ResponseBody
+    public Map findAllByParentId(Integer parentId,HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        return categoryService.findAllByParentId(parentId);
+    }
     @RequestMapping("editChild")
     @ResponseBody
     public Map editChild(String[] id, String name, String parentId, String oper, HttpServletResponse response){
@@ -57,5 +64,17 @@ public class CategoryController {
             map = categoryService.del(id);
         }
         return map;
+    }
+    @RequestMapping("findAllParents")
+    @ResponseBody
+    public List findAllParents(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        return categoryService.findAllParents();
+    }
+    @RequestMapping("findById")
+    @ResponseBody
+    public Map findByChildId(HttpServletResponse response,Integer id){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        return categoryService.findById(id);
     }
 }
