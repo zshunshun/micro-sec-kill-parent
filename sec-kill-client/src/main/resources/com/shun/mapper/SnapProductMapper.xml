@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shun.dao.SnapProductDao">
+    <resultMap id="snapMap" type="SnapProduct">
+        <id column="id" property="id"/>
+        <result column="product_id" property="productId"/>
+        <result column="count" property="count"/>
+        <result column="price" property="price"/>
+        <result column="create_date" property="createDate"/>
+        <result column="snap_date" property="snapDate"/>
+        <association property="product" javaType="Product">
+            <result column="name" property="name"/>
+            <result column="cover" property="cover"/>
+            <result column="product_price" property="price"/>
+            <result column="inventory" property="inventory"/>
+        </association>
+    </resultMap>
+    <select id="findByPage" resultMap="snapMap">
+        select s.id id,p.id product_id,`name`,cover,p.price product_price,inventory,s.count count,s.price price,s.create_date create_date,snap_date
+        from snap_product s left join product p on s.product_id=p.id
+        limit #{start},#{rows}
+    </select>
+
+</mapper>

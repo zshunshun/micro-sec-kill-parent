@@ -120,7 +120,7 @@
 
                         <h4 class="panel-title">
                             <!--data-toggle collapse 折叠效果 -->
-                            <a data-toggle="collapse"  href="#collapseThree" data-parent="#accordion" >
+                            <a data-toggle="collapse"  href="#collapseFour" data-parent="#accordion" >
                                 秒杀管理
                             </a>
                         </h4>
@@ -130,8 +130,7 @@
                     <div id="collapseFour" class="panel-collapse collapse">
                         <div class="panel-body">
                             <ul class="list-group">
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/product-manager.jsp');">文章列表</a></li>
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/product-managerSearch.jsp');">文章搜索</a></li>
+                                <li class="list-group-item"><a href="javascript:javascript:gotoSnapList();">秒杀列表</a></li>
                             </ul>
                         </div>
                     </div>
@@ -159,30 +158,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!--第六个面板-->
-                <div class="panel panel-default">
-                    <!--面板标题-->
-                    <div class="panel-heading" role="tab" id="headingSix">
-
-                        <h4 class="panel-title">
-                            <!--data-toggle collapse 折叠效果 -->
-                            <a data-toggle="collapse"  href="#collapseFive" data-parent="#accordion" >
-                                数据展示
-                            </a>
-                        </h4>
-
-                    </div>
-                    <!--面板内容-->
-                    <div id="collapseSix" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <ul class="list-group">
-                                <li class="list-group-item"><a href="javascript:$('#contentBody').load('${path}/include/banner.jsp');">轮播图列表</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
         <div id="contentBody" class="col-sm-10" >
@@ -325,6 +300,10 @@
     //加载类别列表
     function gotoProductList() {
         $('#contentBody').load('/static/manager/include/productList.html');
+    }
+    //加载类别列表
+    function gotoSnapList() {
+        $('#contentBody').load('/static/manager/include/snap.html');
     }
 </script>
 </body>

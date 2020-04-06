@@ -1,0 +1,70 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">秒杀商品管理</a>
+        </div>
+    </div>
+</nav>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#">秒杀商品信息</a></li>
+    <li>
+</ul>
+<script type="text/javascript" >
+    function changeStatus(id,status) {
+        $.post(hostname+":8761/snap-manager/changeStatus",{id:id,status:status},function (result) {
+            $("#snapList").trigger("reloadGrid");
+        });
+    }
+    $(function () {
+        //设置导出用户信息链接
+        $("#snapList").jqGrid(
+            {
+                url : hostname+':8764/snapProduct/findByPage',
+                datatype : "json",
+                colNames : [ 'ID', '商品ID','商品名', '封面', '原价', '库存','抢购价','抢购数量','开始时间','创建时间' ],
+                colModel : [
+                    {name : 'id',hidden:true},
+                    {name : 'productId',align:"center",search: true,editable:true},
+                    {name : 'name',align:"center",search: true,formatter:function (cellvalue, options, rowObject) {
+                        return rowObject.product.name;}},
+                    {name : 'cover',align:"center",search: true,formatter:function (cellvalue, options, rowObject) {
+                            return "<img src='"+rowObject.product.cover+"' style='width: 50%;' />";}},
+                    {name : 'productPrice',align:"center",formatter:function (cellvalue, options, rowObject) {
+                            return rowObject.product.price;}},
+                    {name : 'inventory',align:"center",search: true,formatter:function (cellvalue, options, rowObject) {
+                            return rowObject.product.inventory;}},
+                    {name : 'price',align:"center",search: false},
+                    {name : 'count',align:"center",search: false,editable:true},
+                    {name : 'snapDate',align:"center",formatter:function (data) {
+                            let date = new Date(data);
+                            return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
+                        },search: false,editable:true},
+                    {name : 'createDate',align:"center",formatter:function (data) {
+                            var date = new Date(data);
+                            return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+                        },search: false}
+                ],
+                rowNum : 5,
+                rowList : [ 5,10, 15, 20 ],
+                pager : '#snapPager',
+                mtype : "post",
+                viewrecords : true,
+                styleUI:"Bootstrap",
+                autowidth:true,
+                multiselect:true,
+                height: 350,
+                editurl:hostname+":8762/product-manager/edit"
+            });
+        $("#snapList").jqGrid('navGrid', '#snapPager', {edit : true,add : true,del : true,search:true,edittext:"编辑",addtext:"添加",deltext:"删除"},
+            {},{},{},{
+                sopt : [ 'cn', 'eq', 'ne' ]
+            });
+    });
+</script>
+
+
+<div>
+    <table id="snapList"></table>
+    <div id="snapPager" style="height: 35px" ></div>
+</div>
