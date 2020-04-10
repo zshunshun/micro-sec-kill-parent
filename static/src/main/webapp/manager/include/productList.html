@@ -95,7 +95,7 @@
                 datatype : "json",
                 colNames : [ 'ID','商品名','类别', '封面','价格','库存', '销量', '创建时间','介绍',"操作" ],
                 colModel : [
-                    {name : 'id',hidden:true},
+                    {name : 'id',align:"center",search:true},
                     {name : 'name',align:"center",editable:true,editrules:{required:true}},
                     {name : 'categoryId',align:"center",editable:true,editrules:{required:true},formatter: function (cellvalue, options, rowObject) {
                             let id = rowObject.productCategory.categoryId;
@@ -112,13 +112,13 @@
                     {name : 'cover',align:"center",formatter:function (data) {
                             return "<img src='"+data+"' style='height: 100px;' />";
                         },search: false},
-                    {name : 'price'},
-                    {name : 'inventory'},
-                    {name : 'volume'},
+                    {name : 'price',search:false},
+                    {name : 'inventory',search:false},
+                    {name : 'volume',search:false},
                     {name : 'createDate',align:"center",formatter:function (data) {
                             var date = new Date(data);
                             return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
-                        }},
+                        },search:false},
                     {name : 'info',hidden:true},
                     {
                         name: "haha", formatter: function (cellvalue, options, rowObject) {
@@ -137,12 +137,13 @@
                 height:300,
                 editurl:hostname+":8762/product-manager/edit"
             });
-        $("#productList").jqGrid('navGrid', '#productPager', {edit : false,add : false,del : true,search:false,edittext:"编辑",addtext:"添加",deltext:"删除"},
-            {
-            },{
-            },
+        $("#productList").jqGrid('navGrid', '#productPager', {edit : false,add : false,del : true,search:true,edittext:"编辑",addtext:"添加",deltext:"删除"},
+            {},
+            {},
             {
                 closeAfterDel:true
+            },{
+                sopt : [ 'cn', 'eq', 'ne' ]
             });
     });
 </script>

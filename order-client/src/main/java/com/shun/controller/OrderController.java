@@ -1,6 +1,6 @@
-package com.shun.manager;
+package com.shun.controller;
 
-import com.shun.service.ProductCategoryService;
+import com.shun.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,14 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Controller
-@RequestMapping("pro-cat-manager")
-public class ProductCategoryController {
+@RequestMapping("order")
+public class OrderController {
     @Autowired
-    private ProductCategoryService productCategoryService;
-    @RequestMapping("findByProductId")
+    private OrderService orderService;
+    @RequestMapping("findByPage")
     @ResponseBody
-    public Map findByProductId(Integer productId,HttpServletResponse response){
+    public Map findByPage(Boolean _search, String searchField, String searchString, String searchOper, Integer page, Integer rows, HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin","*");
-        return productCategoryService.findByProductId(productId);
+        return orderService.findByPage(page, rows);
     }
 }

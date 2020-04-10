@@ -1,7 +1,8 @@
-package com.shun.manager;
+package com.shun.controller.manager;
 
 import com.shun.entity.Product;
 import com.shun.entity.ProductCategory;
+import com.shun.feign.CategoryFeign;
 import com.shun.service.ProductCategoryService;
 import com.shun.service.ProductService;
 import lombok.extern.log4j.Log4j2;
@@ -21,12 +22,22 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private ProductCategoryService productCategoryService;
+    @Autowired
+    private CategoryFeign categoryFeign;
     @RequestMapping("findByPage")
     @ResponseBody
-    public Map findAll(Integer rows, Integer page, HttpServletResponse response){
+    public Map findAll(Boolean _search,String searchField,String searchString,String searchOper,Integer rows, Integer page, HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin","*");
-        log.info(page);
-        return productService.findByPage(rows,page);
+        if(_search){
+            if("categoryId".equals(searchField)){
+                List<Integer> ids = categoryFeign.searchByName(searchString, searchOper);
+                return productService.searchByCategoryIds(ids,page,rows);
+            }else {
+                return productService.searchByField(searchField, searchString, searchOper, page, rows);
+            }
+        }else {
+            return productService.findByPage(rows, page);
+        }
     }
 
     @RequestMapping("addOrUpdate")
@@ -40,6 +51,7 @@ public class ProductController {
         if(product.getId()!=null){
             System.out.println(product);
             productService.update(product);
+            product.getProductCategory().setProductId(product.getId());
             productCategoryService.updateByProductId(product.getProductCategory());
         }else{
             product.setVolume(0);

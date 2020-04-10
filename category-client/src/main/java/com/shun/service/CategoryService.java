@@ -23,4 +23,6 @@ public interface CategoryService {
     Map findById(Integer id);
 
     Map findAllByParentId(Integer parentId);
+
+    List<Integer> searchByName(String searchString,String searchOper);
 }

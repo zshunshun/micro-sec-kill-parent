@@ -1,0 +1,62 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">订单管理</a>
+        </div>
+    </div>
+</nav>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#">订单信息</a></li>
+    <li>
+</ul>
+<script type="text/javascript" >
+    function changeStatus(id,status) {
+        $.post(hostname+":8761/order-manager/changeStatus",{id:id,status:status},function (result) {
+            $("#orderList").trigger("reloadGrid");
+        });
+    }
+    $(function () {
+        $("#orderList").jqGrid(
+            {
+                url : hostname+':8765/order/findByPage',
+                datatype : "json",
+                colNames : [ 'ID', '用户ID', '收件人姓名', '收件人电话','收件地址','商品名','原价','秒杀价','数量','总价','下单时间','订单状态' ],
+                colModel : [
+                    {name : 'id',hidden:true},
+                    {name : 'orderId',hidden:true},
+                    {name : 'name',align:"center",search: true},
+                    {name : 'phone',align:"center",search: true},
+                    {name : 'addr',align:"center",search: true},
+                    {name : 'productName',align:"center",search: true},
+                    {name : 'originalPrice',align:"center",search: true},
+                    {name : 'snapPrice',align:"center",search: true},
+                    {name : 'count',align:"center",search: true},
+                    {name : 'totalPrice',align:"center",search: true},
+                    {name : 'createDate',align:"center",formatter:function (data) {
+                            let date = new Date(data);
+                            return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+                        },search: false},
+                    {name : 'status',align:"center",search: true},
+                ],
+                rowNum : 5,
+                rowList : [ 5,10, 15, 20 ],
+                pager : '#orderPager',
+                mtype : "post",
+                viewrecords : true,
+                styleUI:"Bootstrap",
+                autowidth:true,
+                height: 350
+            });
+        $("#orderList").jqGrid('navGrid', '#orderPager', {edit : false,add : false,del : false,search:true,edittext:"编辑",addtext:"添加",deltext:"删除"},
+            {},{},{},{
+                sopt : [ 'cn', 'eq', 'ne' ]
+            });
+    });
+</script>
+
+
+<div>
+    <table id="orderList"></table>
+    <div id="orderPager" style="height: 35px" ></div>
+</div>

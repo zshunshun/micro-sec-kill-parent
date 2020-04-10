@@ -77,4 +77,11 @@ public class CategoryController {
         response.setHeader("Access-Control-Allow-Origin","*");
         return categoryService.findById(id);
     }
+    @RequestMapping("searchByName")
+    @ResponseBody
+    public List<Integer> searchByName(String searchString,String searchOper,HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        List<Integer> list = categoryService.searchByName(searchString,searchOper);
+        return list;
+    }
 }

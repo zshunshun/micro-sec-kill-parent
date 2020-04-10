@@ -21,4 +21,46 @@
         from product p left join product_category pc on p.id = pc.product_id
         limit #{start},#{rows}
     </select>
+    <select id="searchByField" resultMap="productMap">
+        select p.id id,name,price,info,cover,inventory,volume,create_date,pc.id pcId,pc.category_id pcCategoryId,pc.product_id pcProductId
+        from product p left join product_category pc on p.id = pc.product_id
+        <trim prefix="where">
+            <if test="searchField!=null">
+                <if test="searchOper=='cn'">p.${searchField} like CONCAT('%',#{searchString},'%')</if>
+                <if test="searchOper=='eq'">p.${searchField}=#{searchString}</if>
+                <if test="searchOper=='ne'">pc.${searchField}!=#{searchString}</if>
+            </if>
+        </trim>
+        limit #{start},#{rows}
+    </select>
+    <select id="selectCountByField" resultType="Integer">
+        select count(p.id)
+        from product p left join product_category pc on p.id = pc.product_id
+        <trim prefix="where">
+            <if test="searchField!=null">
+                <if test="searchOper=='cn'">p.${searchField} like CONCAT('%',#{searchString},'%')</if>
+                <if test="searchOper=='eq'">p.${searchField}=#{searchString}</if>
+                <if test="searchOper=='ne'">pc.${searchField}!=#{searchString}</if>
+            </if>
+        </trim>
+        limit #{start},#{rows}
+    </select>
+    <select id="searchByCategoryIds" resultMap="productMap">
+        select p.id id,name,price,info,cover,inventory,volume,create_date,pc.id pcId,pc.category_id pcCategoryId,pc.product_id pcProductId
+        from product p left join product_category pc on p.id = pc.product_id
+        where pc.category_id in
+        <foreach collection="ids" open="(" item="id" separator=","  close=")">
+            #{id}
+        </foreach>
+        limit #{start},#{rows}
+    </select>
+    <select id="selectCountByCategoryIds" resultType="Integer">
+        select count(p.id)
+        from product p left join product_category pc on p.id = pc.product_id
+        where pc.category_id in
+        <foreach collection="ids" open="(" item="id" separator=","  close=")">
+            #{id}
+        </foreach>
+        limit #{start},#{rows}
+    </select>
 </mapper>

@@ -128,4 +128,20 @@ class CategoryServiceImpl implements CategoryService {
         }
         return map;
     }
+
+    @Override
+    public List<Integer> searchByName(String searchString,String searchOper) {
+        Example example = new Example(Category.class);
+        if("cn".equals(searchOper)) {
+            example.createCriteria().andLike("name", "%" + searchString + "%");
+        }else if("eq".equals(searchOper)){
+            example.createCriteria().andEqualTo("name", searchString );
+        }else {
+            example.createCriteria().andNotEqualTo("name", searchString );
+        }
+        List<Category> categories = categoryDao.selectByExample(example);
+        List<Integer> ids = new ArrayList<>();
+        categories.forEach(category -> ids.add(category.getId()));
+        return ids;
+    }
 }
