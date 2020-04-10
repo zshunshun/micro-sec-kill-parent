@@ -5,7 +5,7 @@
 <script type="text/javascript">
     let url = hostname+':8761/user-manager/findNewUsers';
     function changeOption(o,c) {
-        $.post(url,{},function(result) {
+        $.post(url,{jsessionid:jsessionid},function(result) {
             o.series[0].data = result.listMan;
             o.series[1].data = result.listFeman;
             c.setOption(o);

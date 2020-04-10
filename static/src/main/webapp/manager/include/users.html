@@ -15,16 +15,16 @@
 </ul>
 <script type="text/javascript" >
     function changeStatus(id,status) {
-        $.post(hostname+":8761/user-manager/changeStatus",{id:id,status:status},function (result) {
+        $.post(hostname+":8761/user-manager/changeStatus",{jsessionid:jsessionid,id:id,status:status},function (result) {
             $("#userList").trigger("reloadGrid");
         });
     }
     $(function () {
         //设置导出用户信息链接
-        $("#outExcel").attr("href",hostname+":8761/user-manager/getEXCEL");
+        $("#outExcel").attr("href",hostname+":8761/user-manager/getEXCEL?jsessionid="+jsessionid);
         $("#userList").jqGrid(
             {
-                url : hostname+':8761/user-manager/findAll',
+                url : hostname+':8761/user-manager/findAll?jsessionid='+jsessionid,
                 datatype : "json",
                 colNames : [ 'ID', '昵称', '用户名', '性别','状态', '手机号','头像','注册时间','最后登录时间' ],
                 colModel : [

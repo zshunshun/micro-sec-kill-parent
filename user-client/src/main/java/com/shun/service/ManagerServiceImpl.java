@@ -27,9 +27,4 @@ public class ManagerServiceImpl implements ManagerService {
             return null;
         }
     }
-
-    @Override
-    public Boolean logout(Manager manager) {
-        return null;
-    }
 }

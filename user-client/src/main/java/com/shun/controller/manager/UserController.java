@@ -21,7 +21,7 @@ public class UserController {
     private UserService userService;
     @RequestMapping("findAll")
     @ResponseBody
-    public Map findByPage(Boolean _search,String searchField,String searchString,String searchOper,Integer page,Integer rows,HttpServletResponse response){
+    public Map findByPage(String jsessionid,Boolean _search,String searchField,String searchString,String searchOper,Integer page,Integer rows,HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin","*");
         if(_search){
             return userService.findByExample(searchField,searchString,searchOper,page,rows);
@@ -31,7 +31,7 @@ public class UserController {
     }
     @RequestMapping("changeStatus")
     @ResponseBody
-    public Map changeStatus(Integer id,String status,HttpServletResponse response){
+    public Map changeStatus(String jsessionid,Integer id,String status,HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin","*");
         Map map = new HashMap();
         log.info(id);
@@ -42,12 +42,12 @@ public class UserController {
     }
     @RequestMapping("findNewUsers")
     @ResponseBody
-    public Map findNewUsers(HttpServletResponse response){
+    public Map findNewUsers(String jsessionid,HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin","*");
         return userService.findNewUsers();
     }
     @RequestMapping("getEXCEL")
-    public void getEXCEL(HttpServletResponse response) throws IOException {
+    public void getEXCEL(String jsessionid,HttpServletResponse response) throws IOException {
         response.setHeader("content-disposition","attachment;fileName="+ URLEncoder.encode("users.xls","UTF-8"));
         userService.getExcel(response.getOutputStream());
     }
