@@ -11,11 +11,6 @@
     <li>
 </ul>
 <script type="text/javascript" >
-    function changeStatus(id,status) {
-        $.post(hostname+":8761/snap-manager/changeStatus",{id:id,status:status},function (result) {
-            $("#snapList").trigger("reloadGrid");
-        });
-    }
     $(function () {
         //设置导出用户信息链接
         $("#snapList").jqGrid(
@@ -34,9 +29,9 @@
                             return rowObject.product.price;}},
                     {name : 'inventory',align:"center",search: true,formatter:function (cellvalue, options, rowObject) {
                             return rowObject.product.inventory;}},
-                    {name : 'price',align:"center",search: false},
-                    {name : 'count',align:"center",search: false,editable:true},
-                    {name : 'snapDate',align:"center",formatter:function (data) {
+                    {name : 'price',align:"center",edittype:"number",editable:true,search: false},
+                    {name : 'count',align:"center",edittype:"number",search: false,editable:true},
+                    {name : 'snapDate',align:"center",edittype:"datetime-local",formatoptions:{srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i'},formatter:function (data) {
                             let date = new Date(data);
                             return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
                         },search: false,editable:true},
@@ -54,10 +49,14 @@
                 autowidth:true,
                 multiselect:true,
                 height: 350,
-                editurl:hostname+":8762/product-manager/edit"
+                editurl:hostname+":8764/snapProduct/edit"
             });
         $("#snapList").jqGrid('navGrid', '#snapPager', {edit : true,add : true,del : true,search:true,edittext:"编辑",addtext:"添加",deltext:"删除"},
-            {},{},{},{
+            {
+                closeAfterEdit: true
+            },{
+                closeAfterAdd: true
+            },{},{
                 sopt : [ 'cn', 'eq', 'ne' ]
             });
     });
