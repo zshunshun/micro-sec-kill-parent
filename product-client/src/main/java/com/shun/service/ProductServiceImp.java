@@ -1,5 +1,7 @@
 package com.shun.service;
 
+import com.shun.annotation.AddCache;
+import com.shun.annotation.DelCache;
 import com.shun.dao.ProductCategoryDao;
 import com.shun.dao.ProductDao;
 import com.shun.entity.Product;
@@ -23,6 +25,7 @@ public class ProductServiceImp implements ProductService {
     private ProductCategoryDao productCategoryDao;
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
+    @AddCache(value = "分页查询")
     public Map findByPage(Integer rows, Integer page) {
         Map map = new HashMap();
         int start = (page-1)*rows;
@@ -38,6 +41,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    @DelCache(value = "更新商品")
     public Boolean update(Product product) {
         Example example = new Example(Product.class);
         example.createCriteria().andEqualTo("id",product.getId());
@@ -46,17 +50,20 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    @DelCache(value = "添加商品")
     public Integer insert(Product product) {
         productDao.insert(product);
         return product.getId();
     }
 
     @Override
+    @DelCache(value = "商品商品")
     public void del(Integer[] ids) {
         productDao.deleteByIdList(Arrays.asList(ids));
     }
 
     @Override
+    @AddCache(value = "搜索商品")
     public Map searchByField(String searchField, String searchString, String searchOper, Integer page, Integer rows) {
         Map map = new HashMap();
         int start = (page-1)*rows;
@@ -71,6 +78,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    @AddCache(value = "通过类别id搜索商品")
     public Map searchByCategoryIds(List<Integer> ids, Integer page, Integer rows) {
         Map map = new HashMap();
         int start = (page-1)*rows;

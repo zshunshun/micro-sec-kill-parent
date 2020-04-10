@@ -3,9 +3,9 @@
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 <div id="userDiv" style="width: 600px;height:400px;"></div>
 <script type="text/javascript">
-    let url = hostname+':8761/user-manager/findNewUsers';
+    let url = hostname+':8761/user-manager/findNewUsers?jsessionid='+jsessionid;
     function changeOption(o,c) {
-        $.post(url,{jsessionid:jsessionid},function(result) {
+        $.post(url,{},function(result) {
             o.series[0].data = result.listMan;
             o.series[1].data = result.listFeman;
             c.setOption(o);

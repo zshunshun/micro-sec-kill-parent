@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.TimeUnit;
+
 @Log4j2
 @Component
 public class UserInterceptor implements HandlerInterceptor {
@@ -31,6 +33,7 @@ public class UserInterceptor implements HandlerInterceptor {
                 return false;
             }else {
                 log.info("放行："+manager);
+                stringRedisTemplate.expire(jsessionid,30, TimeUnit.MINUTES);
                 return true;
             }
         }

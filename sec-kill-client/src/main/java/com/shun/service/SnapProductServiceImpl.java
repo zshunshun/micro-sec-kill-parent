@@ -1,5 +1,7 @@
 package com.shun.service;
 
+import com.shun.annotation.AddCache;
+import com.shun.annotation.DelCache;
 import com.shun.dao.SnapProductDao;
 import com.shun.entity.SnapProduct;
 import org.apache.ibatis.session.RowBounds;
@@ -18,6 +20,7 @@ public class SnapProductServiceImpl implements SnapProductService {
     private SnapProductDao snapProductDao;
 
     @Override
+    @DelCache(value = "添加秒杀商品")
     public Map add(SnapProduct snapProduct) {
         Map map = new HashMap();
         snapProduct.setCreateDate(new Date());
@@ -31,6 +34,7 @@ public class SnapProductServiceImpl implements SnapProductService {
     }
 
     @Override
+    @AddCache(value = "查询所有")
     public Map findAll(Integer rows, Integer page) {
         Map map = new HashMap<>();
         int start = (page-1)*rows;
@@ -45,6 +49,7 @@ public class SnapProductServiceImpl implements SnapProductService {
     }
 
     @Override
+    @AddCache(value = "搜索秒杀商品")
     public Map findByExample(String searchField, String searchString, String searchOper, Integer page, Integer rows) {
         Map map = new HashMap();
         Example example = new Example(SnapProduct.class);
@@ -66,12 +71,14 @@ public class SnapProductServiceImpl implements SnapProductService {
     }
 
     @Override
+    @DelCache(value = "通过id删除")
     public Boolean deleteById(Integer id) {
         int i = snapProductDao.deleteByPrimaryKey(id);
         return i==1?true:false;
     }
 
     @Override
+    @DelCache(value = "更新")
     public Boolean update(SnapProduct snapProduct) {
         int i = snapProductDao.updateByPrimaryKeySelective(snapProduct);
         return i==1?true:false;

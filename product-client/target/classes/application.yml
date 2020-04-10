@@ -13,6 +13,10 @@ spring:
     url: jdbc:mysql://39.106.154.90:3306/micro_secKill?zeroDateTimeBehavior=convertToNull&characterEncoding=utf-8   #Mysql地址
     username: root    #Mysql用户名
     password: root    #Mysql密码
+  redis:
+    host: 39.106.154.90
+    port: 7000
+    database: 0
 management:
   endpoint:
     health:
