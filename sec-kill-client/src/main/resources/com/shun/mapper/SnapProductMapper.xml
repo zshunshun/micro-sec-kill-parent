@@ -6,6 +6,7 @@
         <result column="product_id" property="productId"/>
         <result column="count" property="count"/>
         <result column="price" property="price"/>
+        <result column="volume" property="volume"/>
         <result column="create_date" property="createDate"/>
         <result column="snap_date" property="snapDate"/>
         <association property="product" javaType="Product">
@@ -16,7 +17,7 @@
         </association>
     </resultMap>
     <select id="findByPage" resultMap="snapMap">
-        select s.id id,p.id product_id,`name`,cover,p.price product_price,inventory,s.count count,s.price price,s.create_date create_date,snap_date
+        select s.id id,p.id product_id,`name`,cover,p.price product_price,s.volume volume,inventory,s.count count,s.price price,s.create_date create_date,snap_date
         from snap_product s left join product p on s.product_id=p.id
         limit #{start},#{rows}
     </select>

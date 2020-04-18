@@ -91,4 +91,19 @@ public class ProductServiceImp implements ProductService {
         map.put("page",page);
         return map;
     }
+
+    @Override
+    public Map findById(Integer id) {
+        Product product = new Product();
+        product.setId(id);
+        Map map = new HashMap();
+        Product product1 = productDao.selectOne(product);
+        if(product1!=null) {
+            map.put("product", product1);
+            map.put("status", 200);
+        }else{
+            map.put("status",500);
+        }
+        return map;
+    }
 }

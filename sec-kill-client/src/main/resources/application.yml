@@ -27,3 +27,9 @@ mybatis:
 logging:
   level:
     com.shun.dao: debug
+shun:
+  rows: 20
+async:
+  maxPoolSize: 50
+  corePoolSize: 20
+  queueCapacity: 10

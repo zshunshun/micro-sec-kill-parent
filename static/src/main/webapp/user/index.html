@@ -2,9 +2,346 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>微秒杀商城</title>
+    <!-- 自定义cookie工具-->
+    <script src="../js/cookieUtil.js"></script>
+    <link rel="stylesheet" href="../tboot/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../tboot/css/back.css">
+    <link rel="stylesheet" href="../jqgrid/css/trirand/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../jqgrid/css/jquery-ui.css">
+    <script src="../tboot/js/jquery-2.2.1.min.js"></script>
+    <script src="../tboot/js/bootstrap.min.js"></script>
+    <script src="../jqgrid/js/trirand/src/jquery.jqGrid.js"></script>
+    <script src="../jqgrid/js/trirand/i18n/grid.locale-cn.js"></script>
+    <script src="../tboot/js/ajaxfileupload.js"></script>
+    <script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <style type="text/css">
+        .snapTime{
+            font-size: 25px;
+            padding: 0;
+            margin-top: -15px;
+        }
+        .a-btn{
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .product-detail{
+            font-size: 15px;
+            color: black;
+            margin-bottom: 22px;
+            height: 100px;
+        }
+        .product-price{
+            font-size: 30px;
+            color: red;
+        }
+        small{
+            color: gray;
+            font-size: 20px;
+            text-decoration: line-through;
+        }
+        .start-snap{
+            font-size: 25px;
+            margin-left: 20px;
+            background-color: lightpink;
+            border-radius:5px;
+            padding: 5px;
+        }
+        .snap-already{
+            font-size: 13px;
+            color: gray;
+        }
+    </style>
 </head>
 <body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid blockquote-reverse">
+        <!-- 左边栏 -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">微秒杀商城</a>
+            <ul id="left-bar" class="nav navbar-nav navbar-left">
+                <li  id="to-localtime"><span class="navbar-brand tbox" id="localTimeSpan"></span></li>
+            </ul>
+        </div>
 
+        <!-- 右边栏 -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul id="right-bar" class="nav navbar-nav navbar-right">
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container text-center">
+    <!--抢购时间线-->
+    <div class="row" id="snap-time-div">
+    </div>
+    <!--抢购商品-->
+    <div class="row" id="product-div">
+        <div class="col-sm-10" id="product-detail-div" >
+            <div class="row">
+                <div class="col-sm-6" >
+                    <div class="row product-div">
+                        <a href="javascript:void(0);">
+                            <div class="col-sm-6 text-right">
+                                <img width="200px" src="../manager/img/avatar.jpg"/>
+                            </div>
+                            <div class="col-sm-6 product-info text-left">
+                                <div class="product-detail">商品的介绍，很好用的杯子</div>
+                                <small>112￥</small>
+                                <div class="product-price">86￥<span class="start-snap">开始抢</span></div>
+                                <div class="snap-already">已抢购20%</div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                        <span class="sr-only">40% Complete (success)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6" >
+                    <div class="row product-div">
+                        <a href="javascript:void(0);">
+                            <div class="col-sm-6 text-right">
+                                <img width="200px" src="../manager/img/avatar.jpg"/>
+                            </div>
+                            <div class="col-sm-6 product-info text-left">
+                                <div class="product-detail">商品的介绍，很好用的杯子</div>
+                                <small>112￥</small>
+                                <div class="product-price">86￥<span class="start-snap">开始抢</span></div>
+                                <div class="snap-already">已抢购20%</div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                        <span class="sr-only">40% Complete (success)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1 text-left" >
+            <div>分类浏览</div>
+            <div><a href="javascript:void(0);">女装</a></div>
+            <div><a href="javascript:void(0);">男装</a></div>
+            <div><a href="javascript:void(0);">手机数码</a></div>
+        </div>
+        <div class="col-sm-1 text-left" >
+            <div>热门品类</div>
+            <div><a href="javascript:void(0);">女装</a></div>
+            <div><a href="javascript:void(0);">男装</a></div>
+            <div><a href="javascript:void(0);">手机数码</a></div>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    let hostname = "http://"+window.location.hostname;
+    let userToken = getCookie("userToken");
+    let page = 1;
+    let total = 2;
+    //设置商品
+    function setSnapProducts() {
+        if(page>=total){
+            let $span = $("<span/>").text("到底啦！").css("font-size","50px");
+            $("#product-div").append($span);
+            return false;
+        }
+        let nowHours = $("#on-time").text().substring(0,2);
+        let date = new Date();
+        date.setHours(nowHours);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        let dateTime = dateToString(date);
+        let data = {"page":page,"dateTime":dateTime};
+        $.post(hostname+":8764/snapProduct/searchByTime",data,function (result) {
+            if(result.status==500||result.rows.length==0){
+                let $span = $("<span/>").text("当前时间无抢购！").css("font-size","50px");
+                $("#product-div").empty().append($span);
+            }else{
+                page = result.page;
+                total = result.total;
+                let $divPro = $("<div/>").addClass("col-sm-10").attr("id","product-detail-div");
+                $("#product-div").empty().append($divPro);
+                let $row = $("<div/>").addClass("row");
+                for (let i = 0; i <result.rows.length ; i++) {
+                    if(i>0&&i%2==0){
+                        $("#product-detail-div").append($row);
+                        $row = $("<div/>").addClass("row");
+                    }
+                    setProductDiv(result.rows[i],$row);
+                    if (i==result.rows.length-1)
+                        $("#product-detail-div").append($row);
+                }
+                let $categoryDiv = $("<div/>").addClass("col-sm-1");
+                let $cateTitle = $("<div/>").text("分类浏览");
+                $.post(hostname+":8766/category/findAllParents",function (categories) {
+                    for (let i = 0; i < categories.length; i++) {
+                        let $di = $("<div/>");
+                        let $a = $("<a/>").attr("href","javascript:void(0);").text(categories[i].name);
+                        $cateTitle.append($di.append($a));
+                        $categoryDiv.append($cateTitle);
+                    }
+                    $("#product-div").append($categoryDiv);
+                });
+            }
+        });
+    }
+    //设置商品的div
+    function setProductDiv(snapProduct,$row) {
+        console.log(snapProduct);
+        $.post(hostname+":8762/product/findById",{"id":snapProduct.productId},function (product) {
+            if(product.status==500){
+                return false;
+            }else {
+                let p = product.product;
+                let $col = $("<div/>").addClass("col-sm-3");
+                let $a = $("<a/>").attr("href", "javascript:productDetail("+snapProduct.id+");");
+                let $img = $("<img/>").css("height", "250px").css("width","230px").attr("src", p.cover);
+                let $col2 = $("<div/>").addClass("col-sm-3 product-info text-left");
+                let $proDetail = $("<div/>").addClass("product-detail").text(p.name);
+                let $small = $("<small/>").text("￥"+p.price);
+                let $snapPrice = $("<div/>").addClass("product-price").text("￥"+snapProduct.price);
+                let $startBtn = $("<span/>").addClass("start-snap").text("开始抢");
+                $snapPrice.append($startBtn);
+                let alreadyPercent = toPercent(snapProduct.volume/snapProduct.count);
+                let $already = $("<div/>").addClass("snap-already").text("已抢购"+alreadyPercent+"%");
+                let $progress = $("<div/>").addClass("progress");
+                let $pin = $("<div/>").addClass("progress-bar progress-bar-success").css("width",alreadyPercent+"%").attr("aria-valuenow","40").attr("aria-valuemin",0).attr("aria-valuemax",100).attr("role","progressbar");
+                let $pSpan = $("<span/>").addClass("sr-only").text("0% Complete (success)");
+                $pin.append($pSpan);
+                $progress.append($pin);
+                $col.append($img);
+                $col2.append($proDetail).append($small).append($snapPrice).append($already).append($progress);
+                $row.append($a.append($col).append($col2));
+            }
+        });
+
+
+    }
+    //商品详情
+    function productDetail(id) {
+        window.open(hostname+":1208/static/user/productDetail.html?id="+id);
+    }
+    //将小数转化为百分数
+    function toPercent(point){
+        if (point==0) {
+            return 0;
+        }
+        let str=Number(point*100).toFixed();
+        return str;
+    }
+    //退出登录
+    function logout() {
+        $.post(hostname+":8761/user/logout",{'userToken':userToken},function (result) {
+            if (result.status==200){
+                window.location.href = hostname + ":1208/static/user/index.html";
+            }
+        });
+    }
+    //根据token获取用户名等信息
+    function setUsername() {
+        $.post(hostname+':8761/user/getUsername',{'userToken':userToken},function (result) {
+            if(result.status==200){
+                $("#right-bar").empty();
+                let $li1 = $("<li/>");
+                let $li2 = $("<li/>");
+                let $li3 = $("<li/>");
+                let $li4 = $("<li/>");
+                let $img = $("<img/>").attr("src",result.pic).addClass("navbar-brand tbox img-circle");
+                let $aUsername = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:userInfo();").text(result.username);
+                let $aOrder = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:orderManager();").text("订单管理");
+                let $aLogout = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:logout();").text("安全退出");
+                $li1.append($img);
+                $li2.append($aUsername);
+                $li3.append($aOrder);
+                $li4.append($aLogout);
+                $("#right-bar").append($li1).append($li2).append($li3).append($li4);
+            }else{
+                let $li = $("<li/>").attr("id","to-login");
+                let $a = $("<a/>").addClass("navbar-brand tbox").attr("href","./login.html").text("请登录/注册");
+                $li.append($a);
+                $("#right-bar").append($li);
+            }
+        });
+    }
+    //获取地址栏参数
+    function getUrlParam(name) {
+        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        let r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    //获取当前时间的日期和时分秒
+    function dateToString(date) {
+        let month = date.getMonth()+1;month=month<10?"0"+month:month;
+        let datetime = date.getDate();datetime=datetime<10?"0"+datetime:datetime;
+        let hours = date.getHours();hours=hours<10?"0"+hours:hours;
+        let min = date.getMinutes();min=min<10?"0"+min:min;
+        let sec = date.getSeconds();sec=sec<10?"0"+sec:sec;
+        let dateTime = date.getFullYear() + "-" + month + "-" + datetime + " " + hours + ":" + min + ":" + sec;
+        return dateTime;
+    }
+    //更新实时时间的函数
+    function changeTime(){
+        let date = new Date();
+        setTimeout(function () {
+            let dateTime = dateToString(date);
+            $("#localTimeSpan").text("当前时间："+dateTime);
+        },date.getMilliseconds()<10?0:1000-date.getMilliseconds());
+    }
+    //设置秒杀时间的横条
+    function setSnapTimeDiv(){
+        let date = new Date();
+        let hours = date.getHours();hours=hours<10?"0"+hours:hours;
+        let minutes = date.getMinutes();minutes=minutes<10?"0"+minutes:minutes;
+        let nowTime = hours+":"+minutes;
+        let times = ['00:00','08:00','10:00','11:00','12:00','13:00','14:00','16:00','18:00','20:00','22:00','23:00'];
+        let index = 0;
+        for (let i = 0; i <times.length ; i++) {
+            if(times[i]>nowTime){
+                index = i-1;
+                break;
+            }
+        }
+        $("#snap-time-div").empty();
+        for (let i = index; i < times.length; i++) {
+            let $col = $("<div/>").addClass("col-sm-1");
+            let $a = $("<a/>").addClass("btn a-btn").attr('href','javascript:void(0);').attr("value",times[i]);
+            let $snapTime = $("<div/>").addClass("snapTime").text(times[i]);
+            let $snapStatus = $("<div/>").addClass("snapStatus").text("即将开始");
+            if(i==index){
+                $snapStatus.text("正在抢购");
+                $a.css("color","red").attr("value",times[i]).attr("id","on-time");
+            }
+            $a.append($snapTime).append($snapStatus);
+            $col.append($a);
+            $("#snap-time-div").append($col);
+        }
+        for (let i = 0; i < index; i++) {
+            let $col = $("<div/>").addClass("col-sm-1");
+            let $a = $("<a/>").addClass("btn a-btn").attr('href','javascript:void(0);').attr("value",times[i]);
+            let $snapTime = $("<div/>").addClass("snapTime").text(times[i]);
+            let $snapStatus = $("<div/>").addClass("snapStatus").text("明天开始");
+            $a.append($snapTime).append($snapStatus);
+            $col.append($a);
+            $("#snap-time-div").append($col);
+        }
+    }
+    $(function () {
+        //对jsessionid进行验证获取，如果本地存在直接使用，否则从服务器获取
+        if(userToken==null){
+            $.post("/static/cookie/getJsessionid",'',function (result) {
+                setCookie("userToken",result);
+            });
+        }
+        setUsername();
+        setInterval(changeTime,10);
+        setSnapTimeDiv();
+        setSnapProducts(1);
+    });
+</script>
 </body>
 </html>

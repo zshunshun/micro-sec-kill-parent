@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <!-- 自定义cookie工具-->
+    <script src="../js/cookieUtil.js"></script>
+    <link rel="stylesheet" href="../tboot/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../tboot/css/back.css">
+    <link rel="stylesheet" href="../jqgrid/css/trirand/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../jqgrid/css/jquery-ui.css">
+    <script src="../tboot/js/jquery-2.2.1.min.js"></script>
+    <script src="../tboot/js/bootstrap.min.js"></script>
+    <script src="../jqgrid/js/trirand/src/jquery.jqGrid.js"></script>
+    <script src="../jqgrid/js/trirand/i18n/grid.locale-cn.js"></script>
+    <script src="../tboot/js/ajaxfileupload.js"></script>
+    <script charset="utf-8" src="../kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="../kindeditor/lang/zh-CN.js"></script>
+    <style type="text/css">
+        #snap-title{
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #snap-price,#product-price{
+            font-size: 20px;
+        }
+        #snap-price-span{
+            font-size: 50px;
+            color: red;
+        }
+        #snap-time-count{
+            font-size: 20px;
+        }
+        #start-btn{
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid blockquote-reverse">
+        <!-- 左边栏 -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">微秒杀商城</a>
+            <ul id="left-bar" class="nav navbar-nav navbar-left">
+                <li  id="to-localtime"><span class="navbar-brand tbox" id="localTimeSpan"></span></li>
+            </ul>
+        </div>
+
+        <!-- 右边栏 -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul id="right-bar" class="nav navbar-nav navbar-right">
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4" id="img">
+            <img src="" id="snap-img" width="380px"/>
+        </div>
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading" id="snap-title"></div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-success" id="product-price"> </li>
+                        <li class="list-group-item list-group-item-info" id="snap-price"></li>
+                        <li class="list-group-item list-group-item-warning" id="snap-time-count">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    活动开始时间：<span class="label label-info" id="start-time">2020-04-13 17:00</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    剩余数量：<span id="snap-count">34</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-danger">
+                            <button type="button" class="btn btn-danger disabled" id="start-btn"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div id="product-div" class="col-sm-6 col-sm-offset-2">
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+<script type="application/javascript">
+    let hostname = "http://"+window.location.hostname;
+    let userToken = getCookie("userToken");
+    let id = getUrlParam("id");
+    let dateString = "";
+    let flag = 0;
+    //获取地址栏参数
+    function getUrlParam(name) {
+        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        let r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    //展示商品
+    function showProduct(){
+        $.post(hostname+":8764/snap/findById",{"id":id},function (result) {
+            if(result.status==200){
+                $("#snap-img").attr("src",result.product.cover);
+                $("#snap-title").text(result.product.name);
+                let $s = $("<s>").text("￥"+result.product.price).attr("id","product-price-s");
+                $("#product-price").text("商品价格：").append($s);
+                let $span = $("<span/>").text("￥"+result.snapProduct.price).attr("id","snap-price-span");
+                $("#snap-price").text("抢购价：").append($span);
+                dateString = result.snapProduct.snapDate;
+                flag = 0;
+                $("#start-time").text(dateString);
+                $("#snap-count").text(result.snapProduct.count-result.snapProduct.volume);
+                $("#product-div").html(result.product.info);
+            }else{
+                alert("商品加载错误！");
+            }
+        });
+    }
+    function isOnSnap() {
+
+    }
+    //根据token获取用户名等信息
+    function setUsername() {
+        $.post(hostname+':8761/user/getUsername',{'userToken':userToken},function (result) {
+            if(result.status==200){
+                $("#right-bar").empty();
+                let $li1 = $("<li/>");
+                let $li2 = $("<li/>");
+                let $li3 = $("<li/>");
+                let $li4 = $("<li/>");
+                let $img = $("<img/>").attr("src",result.pic).addClass("navbar-brand tbox img-circle");
+                let $aUsername = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:userInfo();").text(result.username);
+                let $aOrder = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:orderManager();").text("订单管理");
+                let $aLogout = $("<a/>").addClass("navbar-brand tbox").attr('href',"javascript:logout();").text("安全退出");
+                $li1.append($img);
+                $li2.append($aUsername);
+                $li3.append($aOrder);
+                $li4.append($aLogout);
+                $("#right-bar").append($li1).append($li2).append($li3).append($li4);
+            }else{
+                let $li = $("<li/>").attr("id","to-login");
+                let $a = $("<a/>").addClass("navbar-brand tbox").attr("href","./login.html").text("请登录/注册");
+                $li.append($a);
+                $("#right-bar").append($li);
+            }
+        });
+    }
+    //根据时间更新按钮
+    function setBtn(date) {
+        if(dateString&&date<dateString&&flag===0){
+            $("#start-btn").removeClass("disabled").addClass("disabled").text("尚未开始").remove("onclick");
+        }else if(dateString&&date>=dateString){
+            console.log(date);
+            console.log(dateString);
+            console.log(date<dateString);
+            $("#start-btn").removeClass("disabled").text("马上抢购").attr("onclick","javascript:buyProduct("+id+");");
+            flag=1;
+        }
+    }
+    //抢购方法
+    function buyProduct() {
+        alert("抢购成功！");
+    }
+    //获取当前时间的日期和时分秒
+    function dateToString(date) {
+        let month = date.getMonth()+1;month=month<10?"0"+month:month;
+        let datetime = date.getDate();datetime=datetime<10?"0"+datetime:datetime;
+        let hours = date.getHours();hours=hours<10?"0"+hours:hours;
+        let min = date.getMinutes();min=min<10?"0"+min:min;
+        let sec = date.getSeconds();sec=sec<10?"0"+sec:sec;
+        let dateTime = date.getFullYear() + "-" + month + "-" + datetime + " " + hours + ":" + min + ":" + sec;
+        return dateTime;
+    }
+    //更新实时时间的函数
+    function changeTime(){
+        let date = new Date();
+        let dateTime = dateToString(date);
+        setBtn(dateTime);
+        setTimeout(function () {
+            let dateTime = dateToString(date);
+            $("#localTimeSpan").text("当前时间："+dateTime);
+        },date.getMilliseconds()<10?0:1000-date.getMilliseconds());
+    }
+    $(function () {
+        //对jsessionid进行验证获取，如果本地存在直接使用，否则从服务器获取
+        if(userToken==null){
+            alert(userToken);
+            $.post("/static/cookie/getJsessionid",'',function (result) {
+                setCookie("userToken",result);
+            });
+        }
+        showProduct();
+        setUsername();
+        changeTime();
+        setInterval(changeTime,1000);
+    });
+</script>
+</html>

@@ -117,7 +117,7 @@
                     {name : 'volume',search:false},
                     {name : 'createDate',align:"center",formatter:function (data) {
                             var date = new Date(data);
-                            return  date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+                            return  date.getFullYear()+"-"+date.getMonth()+"-"+(date.getDate()+1);
                         },search:false},
                     {name : 'info',hidden:true},
                     {

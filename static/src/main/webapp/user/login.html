@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="utf-8">
+<title>微秒杀登录</title>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="content">
+        <div class="form sign-in">
+            <h2>登录微秒杀</h2>
+            <label>
+                <span>用户名</span>
+                <input type="text" name="username" id="login-username" />
+            </label>
+            <label>
+                <span>密码</span>
+                <input type="password" name="password" id="login-password" />
+            </label>
+            <label>
+                <span>验证码</span>
+                <input type="text" name="checkCode"  id="checkCode">
+                <img id="code-img" src="../manager/img/验证码.png">
+            </label>
+            <p class="forgot-pass"><a href="javascript:">忘记密码？</a></p>
+            <button type="button" class="submit" id="login-btn" >登 录</button>
+        </div>
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>还未注册？</h2>
+                    <p>立即注册，发现更多好物！</p>
+                </div>
+                <div class="img__text m--in">
+                    <h2>已有帐号？</h2>
+                    <p>登录系统，开始抢购之旅！</p>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">注 册</span>
+                    <span class="m--in">登 录</span>
+                </div>
+            </div>
+            <div class="form sign-up">
+                <h2>注册微秒杀</h2>
+                <label>
+                    <span>用户名</span>
+                    <input type="text" name="username" />
+                </label>
+                <label>
+                    <span>手机号</span>
+                    <input type="text" name="phone" />
+                </label>
+                <label>
+                    <span>密码</span>
+                    <input type="password" name="password" />
+                </label>
+                <button type="button" class="submit">注 册</button>
+            </div>
+        </div>
+    </div>
+    <script src="../tboot/js/jquery-2.2.1.min.js"></script>
+    <!-- 自定义cookie工具-->
+    <script src="../js/cookieUtil.js"></script>
+    <script src="./js/script.js"></script>
+    <script type="text/javascript">
+        let hostname = "http://"+window.location.hostname;
+        let userToken = getCookie("userToken");
+        //设置用户名
+        function setUsername(){
+
+        }
+        $(function () {
+            //加载登录验证码
+            $("#code-img").attr("src",hostname+":8761/security/getCode?jsessionid="+userToken+"&id="+Math.random());
+            //对jsessionid进行验证获取，如果本地存在直接使用，否则从服务器获取
+            if(userToken==null){
+                $.post("/static/cookie/getJsessionid",'',function (result) {
+                    setCookie("userToken",result);
+                });
+            }
+            //点击验证码图片换图
+            $("#code-img").click(function () {
+                $("#code-img").attr("src",hostname+":8761/security/getCode?jsessionid="+userToken+"&id="+Math.random());
+            });
+            $("#login-btn").click(function () {
+                let username = $("#login-username").val();
+                let password = $("#login-password").val();
+                let checkCode = $("#checkCode").val();
+                let data = {'username':username,'password':password,'checkCode':checkCode,'userToken':userToken};
+                $.post(hostname+':8761/user/login',data,function (result) {
+                    if(result.status==200){
+                        window.location.href=hostname+":1208/static/user/index.html";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

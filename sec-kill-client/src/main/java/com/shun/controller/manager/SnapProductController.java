@@ -1,9 +1,10 @@
-package com.shun.controller;
+package com.shun.controller.manager;
 
 import com.shun.entity.SnapProduct;
 import com.shun.feign.ProductFeign;
 import com.shun.service.SnapProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,8 +22,8 @@ import java.util.Map;
 public class SnapProductController {
     @Autowired
     private SnapProductService snapProductService;
-    @Autowired
-    private ProductFeign productFeign;
+    @Value("${shun.rows}")
+    private Integer snapRows;
     @RequestMapping("findByPage")
     @ResponseBody
     public Map findByPage(Boolean _search,String searchField,String searchString,String searchOper,Integer page,Integer rows,HttpServletResponse response){
@@ -61,5 +62,22 @@ public class SnapProductController {
             }
         }
         return map;
+    }
+    @RequestMapping("searchByTime")
+    @ResponseBody
+    public Map searchByTime(String dateTime,Integer page,HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        Map map = new HashMap();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date date = sdf.parse(dateTime);
+            map = snapProductService.searchByTime(date,page,snapRows);
+            map.put("status",200);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            map.put("status",500);
+        }finally {
+            return map;
+        }
     }
 }

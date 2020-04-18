@@ -14,6 +14,6 @@ public interface ProductFeign {
     //多个参数    一定要使用 @RequestParam
     @RequestMapping("/product-manager/findByPage")
     public Map testFeigns(@RequestParam("rows")Integer rows, @RequestParam("page")Integer page);
-    @RequestMapping("/product-manager/findByIds")
-    public Map findByIds(@RequestBody ArrayList<Integer> ids);
+    @RequestMapping("/product/findById")
+    public Map findById(@RequestParam("id") Integer id);
 }

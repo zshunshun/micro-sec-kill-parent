@@ -4,10 +4,12 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.shun.dao.UserDao;
+import com.shun.entity.Manager;
 import com.shun.entity.User;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.OutputStream;
@@ -122,6 +124,24 @@ public class UserServiceImpl implements UserService {
             build.write(userList, wr);
         }
         build.finish();
+    }
+
+    @Override
+    public User login(User user) {
+        Example example = new Example(Manager.class);
+        example.createCriteria().andEqualTo("username",user.getUsername());
+        User reUser = userDao.selectOneByExample(example);
+        if(reUser==null){
+            return null;
+        }
+        String salt = reUser.getSalt();
+        //针对密码加盐后MD5加密
+        String rePassword = DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes());
+        if(rePassword.equals(reUser.getPassword())){
+            return reUser;
+        }else{
+            return null;
+        }
     }
 
 }

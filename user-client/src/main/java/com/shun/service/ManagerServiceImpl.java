@@ -18,6 +18,9 @@ public class ManagerServiceImpl implements ManagerService {
         Example example = new Example(Manager.class);
         example.createCriteria().andEqualTo("username",manager.getUsername());
         Manager reManager = managerDao.selectOneByExample(example);
+        if(reManager==null){
+            return null;
+        }
         String salt = reManager.getSalt();
         //针对密码加盐后MD5加密
         String rePassword = DigestUtils.md5DigestAsHex((manager.getPassword() + salt).getBytes());

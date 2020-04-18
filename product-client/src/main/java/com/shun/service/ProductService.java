@@ -14,4 +14,6 @@ public interface ProductService {
     Map searchByField(String searchField, String searchString, String searchOper, Integer page, Integer rows);
 
     Map searchByCategoryIds(List<Integer> ids, Integer page, Integer rows);
+
+    Map findById(Integer id);
 }

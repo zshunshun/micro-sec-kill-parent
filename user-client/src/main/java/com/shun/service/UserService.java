@@ -1,6 +1,8 @@
 package com.shun.service;
 
 
+import com.shun.entity.User;
+
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -10,4 +12,6 @@ public interface UserService {
     Boolean changeStatus(Integer id,String status);
     Map findNewUsers();
     void getExcel(OutputStream outputStream);
+
+    User login(User user);
 }

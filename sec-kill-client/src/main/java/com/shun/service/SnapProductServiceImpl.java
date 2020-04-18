@@ -24,6 +24,7 @@ public class SnapProductServiceImpl implements SnapProductService {
     public Map add(SnapProduct snapProduct) {
         Map map = new HashMap();
         snapProduct.setCreateDate(new Date());
+        snapProduct.setVolume(0);
         int i = snapProductDao.insertSelective(snapProduct);
         if(i==1){
             map.put("status",200);
@@ -82,5 +83,27 @@ public class SnapProductServiceImpl implements SnapProductService {
     public Boolean update(SnapProduct snapProduct) {
         int i = snapProductDao.updateByPrimaryKeySelective(snapProduct);
         return i==1?true:false;
+    }
+
+    @Override
+    public Map searchByTime(Date dateTime,Integer page,Integer rows) {
+        Map map = new HashMap();
+        int start = (page-1)*rows;
+        Example example = new Example(SnapProduct.class);
+        example.createCriteria().andEqualTo("snapDate",dateTime);
+        List<SnapProduct> snapProducts = snapProductDao.selectByExampleAndRowBounds(example,new RowBounds(start,rows));
+        int i = snapProductDao.selectCountByExample(example);
+        int total = i%rows==0?i/rows:i/rows+1;
+        map.put("rows",snapProducts);
+        map.put("page",page);
+        map.put("total",total);
+        return map;
+    }
+
+    @Override
+    public SnapProduct findById(Integer id) {
+        SnapProduct sp = new SnapProduct();
+        sp.setId(id);
+        return snapProductDao.selectOne(sp);
     }
 }
