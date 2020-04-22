@@ -13,6 +13,12 @@ spring:
     url: jdbc:mysql://39.106.154.90:3306/micro_secKill?zeroDateTimeBehavior=convertToNull&characterEncoding=utf-8   #Mysql地址
     username: root    #Mysql用户名
     password: root    #Mysql密码
+  activemq:
+    broker-url: tcp://101.200.57.35:61616
+    password: admin
+    user: admin
+  jms:
+    pub-sub-domain: true
 management:
   endpoint:
     health:

@@ -17,6 +17,12 @@ spring:
     host: 39.106.154.90
     port: 7000
     database: 0
+  activemq:
+    broker-url: tcp://101.200.57.35:61616
+    password: admin
+    user: admin
+  jms:
+    pub-sub-domain: true
 management:
   endpoint:
     health:

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,11 @@ public class OrderServiceImpl implements OrderService {
         map.put("total",total);
         map.put("page",page);
         return map;
+    }
+
+    @Override
+    public void add(Order order) {
+        order.setCreateDate(new Date());
+        orderDao.insert(order);
     }
 }

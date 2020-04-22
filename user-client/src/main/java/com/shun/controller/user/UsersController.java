@@ -69,6 +69,19 @@ public class UsersController {
         }
         return map;
     }
+    @RequestMapping("getUserId")
+    @ResponseBody
+    public String getUserId(String userToken,HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader( "Set-Cookie", "_u=xxxx; Path=/Login; SameSite=None; Secure");
+        String userJson = (String) stringRedisTemplate.opsForHash().get(userToken, "user");
+        if(userJson!=null) {
+            User user = JSON.parseObject(userJson, User.class);
+            return user.getId().toString();
+        }else {
+            return null;
+        }
+    }
     @RequestMapping("logout")
     @ResponseBody
     public Map logout(String userToken,HttpServletResponse response){
